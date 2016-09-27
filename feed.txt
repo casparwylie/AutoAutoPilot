@@ -1,2 +1,0 @@
-anim/26/switch, 1, "CONNECT BATTERY POWER"
-anim/20/switch, 2, "STARTING APU"
