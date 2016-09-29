@@ -1,10 +1,12 @@
 
 consoleWindow = gui.newWindow("aap_console")
-outputCount = 2 
-outputs = {"Flight Stage", "Current Activity"}
+outputCount = 20
 outputVals = {}
+currOutput = 1
 activitySpeed = 0.5
 feedDataCount = 54
+destination = ""
+
 feedData = {"anim/90/button, 1, CONNECT BATTERY POWER","anim/20/switch, 2, STARTING APU",
 	  "anim/91/button, 1, ENGAGING APU GENERATOR","anim/88/button, 1, SETTING ADIRU ALIGNMENT",
 	  "anim/25/switch, 1, SETTING CARGO HEAT", "anim/89/button, 1, SETTING Assymetric THRUST COMPENSATION",
@@ -31,7 +33,10 @@ feedData = {"anim/90/button, 1, CONNECT BATTERY POWER","anim/20/switch, 2, START
 	  "anim/142/button, 1, ENGAGING ENGINE BLEED AIR L", "anim/144/button, 1, ENGAGING ENGINE BLEED AIR R",
 	  "anim/96/button, 1, ENGAGING ENGINE GENERATOR L", "anim/97/button, 1, ENGAGING ENGINE GENERATOR R",
 	  "anim/2/switch, 2, OPENING FUEL FLOW TO L ENGINE", "anim/18/switch, 0, STARTING L ENGINE",
-	  "anim/3/switch, 2, OPENING FUEL FLOW TO R ENGINE", "anim/19/switch, 0, STARTING R ENGINE"
+	  "anim/3/switch, 2, OPENING FUEL FLOW TO R ENGINE", "anim/19/switch, 0, STARTING R ENGINE",
+	  "T7Avionics/CDU/LLSK1, 1, SELECTING FMC MENU", "T7Avionics/CDU/clear, 1, CLEARING FMC MESSAGES",
+	  "T7Avionics/CDU/RLSK6, 1, GOING TO POS INIT DATA","T7Avionics/CDU/RLSK4, 1, COPYING POSITION DATA",
+	  "T7Avionics/CDU/RLSK5, 1, SAVING POSITION DATA", "non, 1, RWY_DATA"
 	  }
 executeID = 1
 
@@ -49,28 +54,60 @@ function aap_console_OnCreate()
 	innerConsole = gui.newSubWindow(consoleWindow, "", "AAP Activity Feed", 100, 640, 300)
 	for i=1,outputCount, 1 do
 		yPos = 100 + i*15
-		outputVals[outputs[i]] = gui.newLabel(consoleWindow, "", outputs[i], 10, yPos, 20)
+		outputVals[i] = gui.newLabel(consoleWindow, "", "", 220, yPos, 20)
 	end
 	gui.showWindow(consoleWindow)
 	
 end
 
+function clearOutputs()
+	for i=1,outputCount, 1 do
+		gui.setWidgetValue(outputVals[i], "")
+	end
+end
+
 --Initate flight beginning
 function initiateFlight_OnClick()
-	
-	gui.hideWidget(startSel)
-	updateOutputVal("Flight Stage", "STARTING...")
-	actLoop = timer.newTimer( "executionLoop", activitySpeed);
+	local dest = gui.getWidgetValue(textFieldDest)
+	if string.len(dest) ~= 4 then
+		outputVal("Invalid airport code. Please Try again. ", "ERROR")
+	else
+		nav.setSearchGroups( 1,1,1,1, 0,0,0,0, 1,1,1,1 )
+		navID = nav.findNavAid(string.upper(dest), "*", "*", "*", "*")  
+		console.warn(navID)
+		navaid_type, lat, lon, alt, ICAO_ID, Name, reg, freq, heading = nav.getNavAidInfo(navID)
+		destination = dest
+		gui.hideWidget(startSel)
+		outputVal("Starting...", "MESSAGE")
+		actLoop = timer.newTimer( "executionLoop", activitySpeed)
+	end
 	
 end
 
-function updateOutputVal(key, newVal)
-
-	local newFinalVal = key .. ": " .. newVal
-	console.warn(newFinalVal)
-	gui.setWidgetValue(outputVals[key], newFinalVal)
+function outputVal(newVal, typeStr)
+	local toOutput = typeStr .. " >>>" .. newVal
+	gui.setWidgetValue(outputVals[currOutput], toOutput)
+	currOutput = currOutput + 1
+	if(currOutput == outputCount) then
+		currOutput = 0
+		clearOutputs()
+	end
 
 end
+
+
+function getDataRefFromFeed(dataRefID)
+	local dataRow = feedData[dataRefID]
+	local dataRowArr = {}
+	local regexComma = '([^,]+)'
+	local colCount = 1
+	for x in string.gmatch(dataRow, regexComma) do
+    	dataRowArr[colCount] = x
+    	colCount = colCount + 1
+	end
+	return dataRowArr
+end
+
 
 function changeDataRef(datarefSTR, newVal)
 
@@ -86,20 +123,20 @@ end
 
 
 function executionLoop()
-	
-	local dataRow = feedData[executeID]
-	local dataRowArr = {}
-	local regexComma = '([^,]+)'
-	local colCount = 1
-	for x in string.gmatch(dataRow, regexComma) do
-    	dataRowArr[colCount] = x
-    	colCount = colCount + 1
-	end
-	changeDataRef(dataRowArr[1], tonumber(dataRowArr[2]))
-	updateOutputVal("Current Activity", dataRowArr[3])
-	executeID = executeID + 1
-	if executeID == feedDataCount+1 then
+	dataRowArr = getDataRefFromFeed(executeID)
+	if dataRowArr[1] ~= "non" then
+		changeDataRef(dataRowArr[1], tonumber(dataRowArr[2]))
+		outputVal(dataRowArr[3], "ACTION")
+	else
 		timer.stop(actLoop)
 	end
+	executeID = executeID + 1
+
 end
 
+function nonLinearFunctionality(spec)
+
+	---if spec == "AUTO_FUEL" then
+	---end
+
+end
