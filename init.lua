@@ -6,37 +6,38 @@ currOutput = 1
 activitySpeed = 0.5
 feedDataCount = 54
 destination = ""
+timerOn = false
 
-feedData = {"anim/90/button, 1, CONNECT BATTERY POWER","anim/20/switch, 2, STARTING APU",
-	  "anim/91/button, 1, ENGAGING APU GENERATOR","anim/88/button, 1, SETTING ADIRU ALIGNMENT",
-	  "anim/25/switch, 1, SETTING CARGO HEAT", "anim/89/button, 1, SETTING Assymetric THRUST COMPENSATION",
-	  "anim/92/button, 1, SETTING AC L BUS", "anim/93/button, 1, SETTING AC R BUS",
-	  "anim/103/button, 1, WINDOW HEAT ON SIDE L","anim/104/button, 1, WINDOW HEAT ON FWD L",
-	  "anim/105/button, 1, WINDOW HEAT ON SIDE R","anim/106/button, 1, WINDOW HEAT ON FWD R",
-	  "anim/108/button, 1, ENGAGING LEFT PRIMARY HYDRAULIC PUMP","anim/111/button, 1, ENGAGING RIGHT PRIMARY HYDRAULIC PUMP",
-	  "anim/108/button, 1, ENGAGING LEFT PRIMARY HYDRAULICw, IC PUMP","anim/111/button, 1, ENGAGING RIGHT PRIMARY HYDRAULIC PUMP",
-	  "anim/50/switch,1, TESTING FIRE ALERT SYSTEM", "anim/116/button, 1, ENGAGING EEC MODE L",
-	  "anim/117/button, 1, ENGAGING EEC MODE R", "anim/154/button, 1, SET ENGINE AUTO START",
-	  "anim/14/switch, 1, SETTING WING ANTI-ICE TO AUTO", "anim/15/switch, 1, SETTING ENGINE L ANTI-ICE TO AUTO",
-	  "anim/16/switch, 1, SETTING ENGINE R ANTI-ICE TO AUTO", "anim/130/button, 1, SETTING NAVIGATION LIGHTS",
-	  "anim/134/button, 1, L RECIRCULATION FANS ON","anim/135/button, 1, R RECIRCULATION FANS ON",
-	  "anim/136/button, 1, SETTING L AIR PACK ON","anim/147/button, 1, SETTING R AIR PACK ON",
-	  "anim/137/button, 1, SETTING L TRIM AIR ON","anim/138/button, 1, SETTING R TRIM AIR ON",
-	  "anim/139/button, 1, SETTING BLEED AIR ISLN VALVE L ON","anim/140/button, 1,SETTING BLEED AIR ISLN VALVE C ON",
-	  "anim/141/button, 1, SETTING BLEED AIR ISLN VALVE R ON", "anim/143/button, 1, ENGAGING APU BLEED AIR",
-	  "anim/145/button, 1, SETTING PRESSURE OUT FLOW VALVES AUTO L", "anim/146/button, 1, SETTING PRESSURE OUT FLOW VALVES AUTO R",
-	  "anim/7/switch, -1, SETTING AUTOBRAKES TO RTO", "anim/109/button, 1, SETTING ELECTRICAL HYDRAULIC PUMPS C1",
-	  "anim/110/button, 1, SETTING ELECTRICAL HYDRAULIC PUMPS C2", "anim/121/button, 1, SETTING LEFT FUEL PUMPS ON FWD",
-	  "anim/121/button, 1, SETTING LEFT FUEL PUMPS ON FWD", "anim/121/button, 1, SETTING LEFT FUEL PUMPS ON FWD",
-	  "anim/124/button, 1, SETTING LEFT FUEL PUMPS ON AFT","anim/123/button, 1, SETTING RIGHT FUEL PUMPS ON FWD",
-	  "anim/126/button, 1, SETTING RIGHT FUEL PUMPS ON AFT", "anim/129/button, 1, ENGAGING BEACON LIGHTS",
-	  "anim/142/button, 1, ENGAGING ENGINE BLEED AIR L", "anim/144/button, 1, ENGAGING ENGINE BLEED AIR R",
-	  "anim/96/button, 1, ENGAGING ENGINE GENERATOR L", "anim/97/button, 1, ENGAGING ENGINE GENERATOR R",
+feedData = {"anim/90/button,1, CONNECT BATTERY POWER","anim/20/switch, 2, STARTING APU",
+	  "anim/91/button,1, ENGAGING APU GENERATOR","anim/88/button,1, SETTING ADIRU ALIGNMENT",
+	  "anim/25/switch,1, SETTING CARGO HEAT", "anim/89/button,1, SETTING Assymetric THRUST COMPENSATION",
+	  "anim/92/button,1, SETTING AC L BUS", "anim/93/button,1, SETTING AC R BUS",
+	  "anim/103/button,1, WINDOW HEAT ON SIDE L","anim/104/button,1, WINDOW HEAT ON FWD L",
+	  "anim/105/button,1, WINDOW HEAT ON SIDE R","anim/106/button,1, WINDOW HEAT ON FWD R",
+	  "anim/108/button,1, ENGAGING LEFT PRIMARY HYDRAULIC PUMP","anim/111/button,1, ENGAGING RIGHT PRIMARY HYDRAULIC PUMP",
+	  "anim/108/button,1, ENGAGING LEFT PRIMARY HYDRAULIC PUMP","anim/111/button,1, ENGAGING RIGHT PRIMARY HYDRAULIC PUMP",
+	  "anim/50/switch,1, TESTING FIRE ALERT SYSTEM", "anim/116/button,1, ENGAGING EEC MODE L",
+	  "anim/117/button,1, ENGAGING EEC MODE R", "anim/154/button,1, SET ENGINE AUTO START",
+	  "anim/14/switch,1, SETTING WING ANTI-ICE TO AUTO", "anim/15/switch,1, SETTING ENGINE L ANTI-ICE TO AUTO",
+	  "anim/16/switch,1, SETTING ENGINE R ANTI-ICE TO AUTO", "anim/130/button,1, SETTING NAVIGATION LIGHTS",
+	  "anim/134/button,1, L RECIRCULATION FANS ON","anim/135/button,1, R RECIRCULATION FANS ON",
+	  "anim/136/button,1, SETTING L AIR PACK ON","anim/147/button,1, SETTING R AIR PACK ON",
+	  "anim/137/button,1, SETTING L TRIM AIR ON","anim/138/button,1, SETTING R TRIM AIR ON",
+	  "anim/139/button,1, SETTING BLEED AIR ISLN VALVE L ON","anim/140/button,1,SETTING BLEED AIR ISLN VALVE C ON",
+	  "anim/141/button,1, SETTING BLEED AIR ISLN VALVE R ON", "anim/143/button,1, ENGAGING APU BLEED AIR",
+	  "anim/145/button,1, SETTING PRESSURE OUT FLOW VALVES AUTO L", "anim/146/button,1, SETTING PRESSURE OUT FLOW VALVES AUTO R",
+	  "anim/7/switch, -1, SETTING AUTOBRAKES TO RTO", "anim/109/button,1, SETTING ELECTRICAL HYDRAULIC PUMPS C1",
+	  "anim/110/button,1, SETTING ELECTRICAL HYDRAULIC PUMPS C2", "anim/121/button,1, SETTING LEFT FUEL PUMPS ON FWD",
+	  "anim/121/button,1, SETTING LEFT FUEL PUMPS ON FWD", "anim/121/button,1, SETTING LEFT FUEL PUMPS ON FWD",
+	  "anim/124/button,1, SETTING LEFT FUEL PUMPS ON AFT","anim/123/button,1, SETTING RIGHT FUEL PUMPS ON FWD",
+	  "anim/126/button,1, SETTING RIGHT FUEL PUMPS ON AFT", "anim/129/button,1, ENGAGING BEACON LIGHTS",
+	  "anim/142/button,1, ENGAGING ENGINE BLEED AIR L", "anim/144/button,1, ENGAGING ENGINE BLEED AIR R",
+	  "anim/96/button,1, ENGAGING ENGINE GENERATOR L", "anim/97/button,1, ENGAGING ENGINE GENERATOR R",
 	  "anim/2/switch, 2, OPENING FUEL FLOW TO L ENGINE", "anim/18/switch, 0, STARTING L ENGINE",
 	  "anim/3/switch, 2, OPENING FUEL FLOW TO R ENGINE", "anim/19/switch, 0, STARTING R ENGINE",
-	  "T7Avionics/CDU/LLSK1, 1, SELECTING FMC MENU", "T7Avionics/CDU/clear, 1, CLEARING FMC MESSAGES",
-	  "T7Avionics/CDU/RLSK6, 1, GOING TO POS INIT DATA","T7Avionics/CDU/RLSK4, 1, COPYING POSITION DATA",
-	  "T7Avionics/CDU/RLSK5, 1, SAVING POSITION DATA", "non, 1, RWY_DATA"
+	  "T7Avionics/CDU/LLSK1,1, SELECTING FMC MENU", "T7Avionics/CDU/clear,1, CLEARING FMC MESSAGES",
+	  "T7Avionics/CDU/RLSK6,1, GOING TO POS INIT DATA","T7Avionics/CDU/RLSK4,1, COPYING POSITION DATA",
+	  "T7Avionics/CDU/RLSK5,1, SAVING POSITION DATA","non,AUTO_FUEL,1"
 	  }
 executeID = 1
 
@@ -72,14 +73,20 @@ function initiateFlight_OnClick()
 	if string.len(dest) ~= 4 then
 		outputVal("Invalid airport code. Please Try again. ", "ERROR")
 	else
-		nav.setSearchGroups( 1,1,1,1, 0,0,0,0, 1,1,1,1 )
-		navID = nav.findNavAid(string.upper(dest), "*", "*", "*", "*")  
-		console.warn(navID)
-		navaid_type, lat, lon, alt, ICAO_ID, Name, reg, freq, heading = nav.getNavAidInfo(navID)
-		destination = dest
-		gui.hideWidget(startSel)
-		outputVal("Starting...", "MESSAGE")
-		actLoop = timer.newTimer( "executionLoop", activitySpeed)
+		nav.setSearchGroups( 1,0,0,0,0,0,0,0,0,0,0,0)
+		navID = nav.findNavAid(nil,string.upper(dest), nil, nil, nil)  
+		navaid_type, destLat, destLon, alt, ICAO_ID, Name, reg, freq, heading = nav.getNavAidInfo(navID)
+		console.warn(ICAO_ID..Name)
+		if ICAO_ID == string.upper(dest) then
+			destination = ICAO_ID
+			gui.hideWidget(startSel)
+			outputVal("Destination: "..Name, "MESSAGE")
+			outputVal("Starting...", "MESSAGE")
+			actLoop = timer.newTimer( "executionLoop", activitySpeed)
+			timerOn = true
+		else
+			outputVal("That airport code does not exist. Please try again ", "ERROR")
+		end
 	end
 	
 end
@@ -109,15 +116,19 @@ function getDataRefFromFeed(dataRefID)
 end
 
 
-function changeDataRef(datarefSTR, newVal)
+function changeDataRef(datarefSTR, newVal, type)
 
     dataref = dref.getDataref(datarefSTR)
-    if type(newVal) == "string" then 
+    if type == "string" then 
     	dref.setString(dataref, newVal)
-    else
-    	console.warn(datarefSTR, newVal)
-    	dref.setInt(dataref, newVal)
+    elseif type == "int" then
+    	dref.setInt(dataref, newVal) 
+    elseif type == "float" then
+    	console.warn("setttt f"..newVal)
+    	dref.setFloat(dataref, newVal)
     end
+
+    console.warn(dref.getFloat(dataref))
 
 end
 
@@ -125,18 +136,54 @@ end
 function executionLoop()
 	dataRowArr = getDataRefFromFeed(executeID)
 	if dataRowArr[1] ~= "non" then
-		changeDataRef(dataRowArr[1], tonumber(dataRowArr[2]))
+		changeDataRef(dataRowArr[1], tonumber(dataRowArr[2]), "int")
 		outputVal(dataRowArr[3], "ACTION")
 	else
-		timer.stop(actLoop)
+		if timerOn == true then
+			timer.stop(actLoop)
+			timerOn = false
+			nonLinearFunctionality(dataRowArr[2], true)
+		end
 	end
 	executeID = executeID + 1
 
 end
 
-function nonLinearFunctionality(spec)
+function distanceBetweenCoordSet(lon1,lat1, lon2,lat2)
+	a = math.pi / 180
+	lat1 = lat1 * a
+	lat2 = lat2 * a
+	lon1 = lon1 * a
+	lon2 = lon2 * a
+	t1 = math.sin(lat1) * math.sin(lat2)
+	t2 = math.cos(lat1) * math.cos(lat2)
+	t3 = math.cos(lon1 - lon2)
+	t4 = t2 * t3
+	t5 = t1 + t4
+	rad_dist = math.atan(-t5/math.sqrt(-t5 * t5 +1)) + 2 * math.atan(1)
+	route_distance = rad_dist * 3437.74677 * 1.1508 * 0.868976
+	return route_distance
+end
 
-	---if spec == "AUTO_FUEL" then
-	---end
+
+function nonLinearFunctionality(spec, resumeTimer)
+	
+	if spec == "AUTO_FUEL" then
+		latACF,lonACF,alt_msl = acf.getPosition()
+		local currentToDestDistance = distanceBetweenCoordSet(lonACF,latACF,destLon,destLat)
+		local fuelForTankInKG = (currentToDestDistance * 100) / 3 ---* 0.453592
+		for i=1,3,1 do
+			changeDataRef("sim/flightmodel/weight/m_fuel"..i, fuelForTankInKG, "float")
+		end
+		--dd = dref.getDataref("sim/flightmodel/weight/m_fuel1")
+		--console.warn(dref.getFloat(dd).."jj")
+
+	end
+
+	if resumeTimer == true then
+		 timer.reset(actLoop)
+	else
+		executionLoop()
+	end
 
 end
