@@ -3,12 +3,13 @@ consoleWindow = gui.newWindow("aap_console")
 outputCount = 20
 outputVals = {}
 currOutput = 1
-activitySpeed = 0.5
-feedDataCount = 54
+activitySpeed = 0.1
+feedDataCount = 62
 destination = ""
 timerOn = false
+drefCDUpre = "T7Avionics/CDU/"
 
-feedData = {"anim/90/button,1, CONNECT BATTERY POWER","anim/20/switch, 2, STARTING APU",
+feedData = {"non,AUTO_FUEL,1","anim/90/button,1, CONNECT BATTERY POWER","anim/20/switch, 2, STARTING APU",
 	  "anim/91/button,1, ENGAGING APU GENERATOR","anim/88/button,1, SETTING ADIRU ALIGNMENT",
 	  "anim/25/switch,1, SETTING CARGO HEAT", "anim/89/button,1, SETTING Assymetric THRUST COMPENSATION",
 	  "anim/92/button,1, SETTING AC L BUS", "anim/93/button,1, SETTING AC R BUS",
@@ -37,7 +38,8 @@ feedData = {"anim/90/button,1, CONNECT BATTERY POWER","anim/20/switch, 2, STARTI
 	  "anim/3/switch, 2, OPENING FUEL FLOW TO R ENGINE", "anim/19/switch, 0, STARTING R ENGINE",
 	  "T7Avionics/CDU/LLSK1,1, SELECTING FMC MENU", "T7Avionics/CDU/clear,1, CLEARING FMC MESSAGES",
 	  "T7Avionics/CDU/RLSK6,1, GOING TO POS INIT DATA","T7Avionics/CDU/RLSK4,1, COPYING POSITION DATA",
-	  "T7Avionics/CDU/RLSK5,1, SAVING POSITION DATA","non,AUTO_FUEL,1"
+	  "T7Avionics/CDU/RLSK5,1, SAVING POSITION DATA", "non,AUTO_FMC,0",
+	  "T7Avionics/CDU/clear,1, CLEARING FMC MESSAGES", --add to count
 	  }
 executeID = 1
 
@@ -123,17 +125,18 @@ function changeDataRef(datarefSTR, newVal, type)
     	dref.setString(dataref, newVal)
     elseif type == "int" then
     	dref.setInt(dataref, newVal) 
+    	console.warn("s: "..datarefSTR..".."..newVal)
     elseif type == "float" then
-    	console.warn("setttt f"..newVal)
     	dref.setFloat(dataref, newVal)
     end
-
-    console.warn(dref.getFloat(dataref))
-
 end
 
 
 function executionLoop()
+	if executeID == feedDataCount then
+		timer.stop(actLoop)
+		timerOn = false
+	end
 	dataRowArr = getDataRefFromFeed(executeID)
 	if dataRowArr[1] ~= "non" then
 		changeDataRef(dataRowArr[1], tonumber(dataRowArr[2]), "int")
@@ -142,11 +145,12 @@ function executionLoop()
 		if timerOn == true then
 			timer.stop(actLoop)
 			timerOn = false
-			nonLinearFunctionality(dataRowArr[2], true)
 		end
+		nonLinearFunctionality(dataRowArr[2], dataRowArr[3])
+		
 	end
-	executeID = executeID + 1
 
+	executeID = executeID + 1
 end
 
 function distanceBetweenCoordSet(lon1,lat1, lon2,lat2)
@@ -166,24 +170,73 @@ function distanceBetweenCoordSet(lon1,lat1, lon2,lat2)
 end
 
 
+
+
+CDUQueue = {}
+CDUQueuePosID = 1
+CDUQueueTotal = 1
+
+function addToCDUQueue(cduString, msgString)
+	if msgString ~= "" then
+		outputVal(msgString, "ACTION")
+	CDUQueueTotal = CDUQueueTotal + 1
+	table.insert(CDUQueue, cduString)
+end
+
+function addStringToCDUQueue(cduString)
+	for i=1,string.len(cduString),1 do
+		local fullKeyDrefchar = cduString.sub(destination,i,i)
+		addToCDUQueue(fullKeyDrefchar, "")
+	end
+end
+
+function clearCDU() 
+	addToCDUQueue("delete", "")
+	addToCDUQueue("clear", "")
+end
+
 function nonLinearFunctionality(spec, resumeTimer)
 	
 	if spec == "AUTO_FUEL" then
 		latACF,lonACF,alt_msl = acf.getPosition()
 		local currentToDestDistance = distanceBetweenCoordSet(lonACF,latACF,destLon,destLat)
 		local fuelForTankInKG = (currentToDestDistance * 100) / 3 ---* 0.453592
-		for i=1,3,1 do
-			changeDataRef("sim/flightmodel/weight/m_fuel"..i, fuelForTankInKG, "float")
-		end
-		--dd = dref.getDataref("sim/flightmodel/weight/m_fuel1")
-		--console.warn(dref.getFloat(dd).."jj")
+		--for i=1,3,1 do
+			--local dRefName = "sim/flightmodel/weight/m_fuel"..i
+			--changeDataRef(dRefName, fuelForTankInKG, "float")
+			
+		--end
+		outputVal("Fuel aircraft "..fuelForTankInKG.." kg", "**IMPORTANT**")
+
+	elseif spec == "AUTO_FMC" then
+
+
+		--enter origin
+		clearCDU()
+		addStringToCDUQueue(destination)
+		addToCDUQueue("LLSK2", "")
+		addToCDUQueue("RLSK6", "")
+		addStringToCDUQueue(destination)
+		addToCDUQueue("RLSK1", "SETTING FMC DESTINATIONS / ORIGINS")
+
+		CDUQueueTimer = timer.newTimer( "runCDUQueue",0.1)
 
 	end
 
-	if resumeTimer == true then
+	if resumeTimer == "1" then
 		 timer.reset(actLoop)
-	else
-		executionLoop()
+		 timerOn = true
 	end
 
+end
+
+function runCDUQueue()
+	console.warn("CDU TIMER: "..CDUQueue[CDUQueuePosID])
+	changeDataRef(drefCDUpre..CDUQueue[CDUQueuePosID], 1, "int")
+	CDUQueuePosID = CDUQueuePosID + 1
+	if CDUQueuePosID == CDUQueueTotal then
+		timer.stop(CDUQueueTimer)
+		timer.reset(actLoop)
+		timerOn = true
+	end
 end
